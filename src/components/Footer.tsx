@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export const Footer: React.FC = () => {
   const { setActivePage } = useCart();
+  const { setAccountModalOpen } = useAuth();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
+      if (isSupabaseConfigured) {
+        try {
+          await supabase.from('newsletter_subscribers').insert({ email: email.trim() });
+        } catch (err) {
+          console.warn('Newsletter subscribe:', err);
+        }
+      }
       setSubscribed(true);
       setTimeout(() => {
         setEmail('');
@@ -199,6 +209,7 @@ export const Footer: React.FC = () => {
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#8c7e7a] gap-4">
           <p>Faith Inspires Modesty • © 2026 Hijab Box. Baroda. All Rights Reserved.</p>
           <div className="flex items-center space-x-6 text-[11px]">
+            <button onClick={() => setAccountModalOpen(true)} className="text-[#ba7a7c] hover:underline transition-colors font-medium">Supabase Backend &amp; SQL</button>
             <button onClick={() => setActivePage('contact')} className="hover:text-[#2c2725] transition-colors">Privacy Policy</button>
             <button onClick={() => setActivePage('contact')} className="hover:text-[#2c2725] transition-colors">Terms of Service</button>
             <button onClick={() => setActivePage('contact')} className="hover:text-[#2c2725] transition-colors">Shipping &amp; Returns</button>

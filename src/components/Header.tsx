@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { LOGO_URL } from '../data/products';
 
 export const Header: React.FC = () => {
@@ -13,7 +14,16 @@ export const Header: React.FC = () => {
     setWishlistOpen,
   } = useCart();
 
+  const {
+    profile,
+    user,
+    isConfigured,
+    setAuthModalOpen,
+    setAccountModalOpen,
+  } = useAuth();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const navItems = [
     { label: 'SHOP HIJABS', key: 'shop' },
@@ -83,7 +93,21 @@ export const Header: React.FC = () => {
         </nav>
 
         {/* Action Icons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Supabase Indicator Pill */}
+          <button
+            onClick={() => setAccountModalOpen(true)}
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-label-caps font-medium border border-[#D8CCC4]/80 bg-[#F5EFEB] hover:bg-[#ebdcd9] transition-colors cursor-pointer text-[#524343]"
+            title="Supabase Backend & Database Status"
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isConfigured ? 'bg-emerald-500' : 'bg-amber-500'
+              }`}
+            ></span>
+            <span>{isConfigured ? 'Supabase' : 'DB Offline'}</span>
+          </button>
+
           {/* Search Trigger */}
           <button
             onClick={() => setSearchOpen(true)}
@@ -109,13 +133,71 @@ export const Header: React.FC = () => {
             )}
           </button>
 
-          {/* Account Icon */}
-          <div
-            className="w-8 h-8 rounded-full bg-[#844C4E] flex items-center justify-center cursor-pointer shadow-sm hover:opacity-90 transition-opacity"
-            title="Amina Patel (Sister Profile)"
-            onClick={() => handleNavClick('checkout')}
-          >
-            <span className="material-symbols-outlined text-white text-[18px]">person</span>
+          {/* Account Icon & Dropdown */}
+          <div className="relative">
+            <button
+              className="w-8 h-8 rounded-full bg-[#844C4E] flex items-center justify-center cursor-pointer shadow-sm hover:opacity-90 transition-opacity"
+              title={profile?.firstName ? `${profile.firstName} (Sister Profile)` : 'Sister Profile'}
+              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+            >
+              {profile?.firstName ? (
+                <span className="text-white font-serif text-xs font-semibold">
+                  {profile.firstName.charAt(0)}
+                </span>
+              ) : (
+                <span className="material-symbols-outlined text-white text-[18px]">person</span>
+              )}
+            </button>
+
+            {profileDropdownOpen && (
+              <div
+                className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-[#d6c2c1] py-2 z-50 text-left animate-scale-up"
+                onClick={() => setProfileDropdownOpen(false)}
+              >
+                <div className="px-4 py-2 border-b border-[#f5eeeb]">
+                  <p className="font-serif text-sm font-semibold text-[#2B2523] truncate">
+                    {profile?.firstName ? `${profile.firstName} ${profile.lastName}` : 'Sister Account'}
+                  </p>
+                  <p className="text-[11px] text-[#524343] truncate">{profile?.email || 'Guest'}</p>
+                </div>
+
+                <button
+                  onClick={() => setAccountModalOpen(true)}
+                  className="w-full px-4 py-2 text-xs text-[#2B2523] hover:bg-[#f5eeeb] flex items-center gap-2 font-medium cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-[#BA7A7C]">badge</span>
+                  Profile &amp; Orders
+                </button>
+
+                <button
+                  onClick={() => setAccountModalOpen(true)}
+                  className="w-full px-4 py-2 text-xs text-[#2B2523] hover:bg-[#f5eeeb] flex items-center gap-2 font-medium cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-emerald-600">database</span>
+                  Supabase Config &amp; SQL
+                </button>
+
+                <div className="border-t border-[#f5eeeb] my-1"></div>
+
+                {user ? (
+                  <button
+                    onClick={() => setAccountModalOpen(true)}
+                    className="w-full px-4 py-2 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2 font-medium cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">logout</span>
+                    Sign Out
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setAuthModalOpen(true)}
+                    className="w-full px-4 py-2 text-xs text-[#844C4E] hover:bg-[#f5eeeb] flex items-center gap-2 font-semibold cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">login</span>
+                    Sign In / Register
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Cart Icon & Flyout Trigger */}

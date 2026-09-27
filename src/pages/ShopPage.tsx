@@ -4,7 +4,15 @@ import { PRODUCTS } from '../data/products';
 import { Product } from '../types';
 
 export const ShopPage: React.FC = () => {
-  const { addToCart, isInWishlist, toggleWishlist, setQuickViewProduct, setActivePage } = useCart();
+  const {
+    products,
+    loadingProducts,
+    addToCart,
+    isInWishlist,
+    toggleWishlist,
+    setQuickViewProduct,
+    setActivePage,
+  } = useCart();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortOption, setSortOption] = useState<string>('Curated Editorial');
   const [gridColumns, setGridColumns] = useState<3 | 4>(4);
@@ -16,7 +24,7 @@ export const ShopPage: React.FC = () => {
   const [loadedCount, setLoadedCount] = useState<number>(12);
 
   const categories = [
-    { id: 'all', label: 'All (48)' },
+    { id: 'all', label: `All (${products.length})` },
     { id: 'modal', label: 'Modal' },
     { id: 'chiffon', label: 'Chiffon' },
     { id: 'jersey', label: 'Jersey' },
@@ -31,7 +39,7 @@ export const ShopPage: React.FC = () => {
   };
 
   // Filter products based on category
-  const filteredProducts = PRODUCTS.filter((p) => {
+  const filteredProducts = products.filter((p) => {
     if (selectedCategory === 'all') return true;
     if (selectedCategory === 'modal') return p.category === 'modal';
     if (selectedCategory === 'chiffon') return p.category === 'chiffon';

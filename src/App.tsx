@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -6,6 +7,8 @@ import { CartDrawer } from './components/CartDrawer';
 import { SearchModal } from './components/SearchModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { QuickViewModal } from './components/QuickViewModal';
+import { AuthModal } from './components/AuthModal';
+import { AccountModal } from './components/AccountModal';
 import { ShopPage } from './pages/ShopPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
@@ -23,7 +26,13 @@ const AppContent: React.FC = () => {
 
   // Checkout page has its own dedicated header & footer layout as specified in Image 10
   if (activePage === 'checkout') {
-    return <CheckoutPage />;
+    return (
+      <>
+        <CheckoutPage />
+        <AuthModal />
+        <AccountModal />
+      </>
+    );
   }
 
   return (
@@ -56,6 +65,12 @@ const AppContent: React.FC = () => {
       {/* Quick View Fabric & Shade Modal */}
       <QuickViewModal />
 
+      {/* Authentication Modal */}
+      <AuthModal />
+
+      {/* Sister Account, Order History & Supabase Settings */}
+      <AccountModal />
+
       {/* 5-Column Editorial Footer */}
       <Footer />
     </div>
@@ -64,8 +79,10 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </AuthProvider>
   );
 }

@@ -1,8 +1,24 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem, GiftOrderDetails, CheckoutDetails } from '../types';
 import { PRODUCTS } from '../data/products';
+import { useAuth } from './AuthContext';
+import { getProducts } from '../services/productService';
+import { placeOrderInDatabase } from '../services/orderService';
+import {
+  fetchRemoteCart,
+  upsertRemoteCartItem,
+  removeRemoteCartItem,
+  clearRemoteCart,
+} from '../services/cartService';
+import {
+  fetchRemoteWishlist,
+  toggleRemoteWishlistItem,
+} from '../services/wishlistService';
 
 interface CartContextType {
+  products: Product[];
+  loadingProducts: boolean;
+  refreshProducts: () => Promise<void>;
   cart: CartItem[];
   wishlist: string[];
   drawerOpen: boolean;
@@ -35,14 +51,19 @@ interface CartContextType {
   applyPromoCode: (code: string) => boolean;
   setGiftDetails: React.Dispatch<React.SetStateAction<GiftOrderDetails>>;
   setCheckoutDetails: React.Dispatch<React.SetStateAction<CheckoutDetails>>;
-  placeOrder: () => void;
+  placeOrder: () => Promise<string>;
   clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize with the 3 items shown in Image 8 and Image 10
+  const { user, profile } = useAuth();
+
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [loadingProducts, setLoadingProducts] = useState<boolean>(false);
+
+  // Initial cart items
   const initialCart: CartItem[] = [
     {
       id: 'cart-1',
@@ -84,17 +105,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const [checkoutDetails, setCheckoutDetails] = useState<CheckoutDetails>({
-    email: 'amina.patel@sisterhood.co',
-    phone: '9512607726',
+    email: profile?.email || 'amina.patel@sisterhood.co',
+    phone: profile?.phone || '9512607726',
     newsletter: true,
-    country: 'India',
-    firstName: 'Amina',
-    lastName: 'Patel',
-    streetAddress: 'Flat 402, Al-Noor Residency, Near Jubilee Baug',
-    landmark: 'Opposite Old Clock Tower',
-    pincode: '390001',
-    city: 'Vadodara (Baroda)',
-    state: 'Gujarat',
+    country: profile?.country || 'India',
+    firstName: profile?.firstName || 'Amina',
+    lastName: profile?.lastName || 'Patel',
+    streetAddress: profile?.streetAddress || 'Flat 402, Al-Noor Residency, Near Jubilee Baug',
+    landmark: profile?.landmark || 'Opposite Old Clock Tower',
+    pincode: profile?.pincode || '390001',
+    city: profile?.city || 'Vadodara (Baroda)',
+    state: profile?.state || 'Gujarat',
     saveAddress: true,
     shippingMethod: 'standard',
     paymentMethod: 'upi',
@@ -102,44 +123,118 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     billingSameAsShipping: true,
   });
 
+  // Sync profile details when profile changes
+  useEffect(() => {
+    if (profile) {
+      setCheckoutDetails((prev) => ({
+        ...prev,
+        email: profile.email || prev.email,
+        firstName: profile.firstName || prev.firstName,
+        lastName: profile.lastName || prev.lastName,
+        phone: profile.phone || prev.phone,
+        streetAddress: profile.streetAddress || prev.streetAddress,
+        landmark: profile.landmark || prev.landmark,
+        city: profile.city || prev.city,
+        state: profile.state || prev.state,
+        pincode: profile.pincode || prev.pincode,
+        country: profile.country || prev.country,
+      }));
+    }
+  }, [profile]);
+
+  // Load products from Supabase
+  const refreshProducts = async () => {
+    setLoadingProducts(true);
+    const res = await getProducts();
+    if (res.products && res.products.length > 0) {
+      setProducts(res.products);
+    }
+    setLoadingProducts(false);
+  };
+
+  useEffect(() => {
+    refreshProducts();
+  }, []);
+
+  // Fetch remote cart and wishlist for authenticated user
+  useEffect(() => {
+    const userId = user?.id;
+    if (userId) {
+      fetchRemoteCart(userId).then((remoteItems) => {
+        if (remoteItems && remoteItems.length > 0) {
+          setCart(remoteItems);
+        }
+      });
+      fetchRemoteWishlist(userId).then((remoteWish) => {
+        if (remoteWish && remoteWish.length > 0) {
+          setWishlist(remoteWish);
+        }
+      });
+    }
+  }, [user]);
+
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const FREE_SHIPPING_THRESHOLD = 899;
-  
-  // Standard shipping is ₹60 unless subtotal >= ₹899 or promo code covers it
-  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD || checkoutDetails.shippingMethod === 'standard';
-  const shippingFee = checkoutDetails.shippingMethod === 'express' ? 120 : (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 60);
 
-  const total = Math.max(0, subtotal - discount + (subtotal >= FREE_SHIPPING_THRESHOLD && checkoutDetails.shippingMethod === 'standard' ? 0 : shippingFee));
+  const shippingFee =
+    checkoutDetails.shippingMethod === 'express'
+      ? 120
+      : subtotal >= FREE_SHIPPING_THRESHOLD
+      ? 0
+      : 60;
+
+  const total = Math.max(
+    0,
+    subtotal -
+      discount +
+      (subtotal >= FREE_SHIPPING_THRESHOLD && checkoutDetails.shippingMethod === 'standard'
+        ? 0
+        : shippingFee)
+  );
   const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const amountNeededForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
-  const shippingProgressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+  const shippingProgressPercent = Math.min(
+    100,
+    Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100)
+  );
 
   const addToCart = (product: Product, quantity = 1, selectedColor?: string) => {
+    const color = selectedColor || (product.colors && product.colors[0]);
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
+      let updated: CartItem[];
       if (existing) {
-        return prev.map((item) =>
+        updated = prev.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
+      } else {
+        updated = [
+          ...prev,
+          {
+            id: `cart-${Date.now()}`,
+            product,
+            quantity,
+            selectedColor: color,
+          },
+        ];
       }
-      return [
-        ...prev,
-        {
-          id: `cart-${Date.now()}`,
-          product,
-          quantity,
-          selectedColor: selectedColor || (product.colors && product.colors[0]),
-        },
-      ];
+      return updated;
     });
+
+    if (user?.id) {
+      upsertRemoteCartItem(user.id, product, quantity, color);
+    }
     setDrawerOpen(true);
   };
 
   const removeFromCart = (productId: string) => {
     setCart((prev) => prev.filter((item) => item.product.id !== productId));
+    if (user?.id) {
+      removeRemoteCartItem(user.id, productId);
+    }
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -152,14 +247,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         item.product.id === productId ? { ...item, quantity } : item
       )
     );
+    if (user?.id) {
+      const item = cart.find((i) => i.product.id === productId);
+      if (item) {
+        upsertRemoteCartItem(user.id, item.product, quantity, item.selectedColor);
+      }
+    }
   };
 
   const toggleWishlist = (productId: string) => {
+    const isPresent = wishlist.includes(productId);
     setWishlist((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
+      isPresent ? prev.filter((id) => id !== productId) : [...prev, productId]
     );
+    if (user?.id) {
+      toggleRemoteWishlistItem(user.id, productId, !isPresent);
+    }
   };
 
   const isInWishlist = (productId: string) => wishlist.includes(productId);
@@ -175,20 +278,42 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const placeOrder = () => {
-    const randomNum = Math.floor(100000 + Math.random() * 900000);
-    setLastOrderId(`#HB${randomNum}`);
+  const placeOrder = async (): Promise<string> => {
+    const res = await placeOrderInDatabase({
+      userId: user?.id,
+      items: cart,
+      subtotal,
+      discount,
+      shippingFee,
+      total,
+      checkoutDetails,
+      giftDetails,
+    });
+
+    const newOrderId = res.order.orderNumber;
+    setLastOrderId(newOrderId);
     setActivePage('order-confirmed');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (user?.id) {
+      clearRemoteCart(user.id);
+    }
+    return newOrderId;
   };
 
   const clearCart = () => {
     setCart([]);
+    if (user?.id) {
+      clearRemoteCart(user.id);
+    }
   };
 
   return (
     <CartContext.Provider
       value={{
+        products,
+        loadingProducts,
+        refreshProducts,
         cart,
         wishlist,
         drawerOpen,

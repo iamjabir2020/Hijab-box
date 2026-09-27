@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { LOGO_URL } from '../data/products';
 
 export const CheckoutPage: React.FC = () => {
@@ -13,10 +14,13 @@ export const CheckoutPage: React.FC = () => {
     setActivePage,
   } = useCart();
 
+  const { user, isConfigured, setAuthModalOpen } = useAuth();
+
   const [shippingMethod, setShippingMethod] = useState<'standard' | 'express'>('standard');
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking' | 'cod'>('upi');
   const [vpaVerified, setVpaVerified] = useState(true);
   const [promoApplied] = useState(true);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // Compute shipping fee based on selected method
   const shippingCharge = shippingMethod === 'express' ? 120 : (subtotal >= 899 ? 0 : 0);
@@ -25,8 +29,13 @@ export const CheckoutPage: React.FC = () => {
   const finalTotal = Math.max(0, subtotal - discountAmount + shippingCharge + codCharge);
   const gstAmount = Number((subtotal * 0.05).toFixed(2));
 
-  const handlePlaceOrder = () => {
-    placeOrder();
+  const handlePlaceOrder = async () => {
+    setIsPlacingOrder(true);
+    try {
+      await placeOrder();
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   return (
@@ -129,9 +138,19 @@ export const CheckoutPage: React.FC = () => {
                       </span>
                       <h2 className="font-headline-sm text-lg text-[#2B2523] font-medium">Contact Information</h2>
                     </div>
-                    <span className="font-label-caps text-xs text-[#BA7A7C] underline underline-offset-4 decoration-[#C68B8D]">
-                      Already have an account? Log in
-                    </span>
+                    {!user ? (
+                      <button
+                        type="button"
+                        onClick={() => setAuthModalOpen(true)}
+                        className="font-label-caps text-xs text-[#BA7A7C] underline underline-offset-4 decoration-[#C68B8D] cursor-pointer hover:text-[#844C4E] transition-colors"
+                      >
+                        Already have an account? Log in
+                      </button>
+                    ) : (
+                      <span className="font-label-caps text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                        Logged in as Sister
+                      </span>
+                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -629,10 +648,17 @@ export const CheckoutPage: React.FC = () => {
                 <div className="space-y-3">
                   <button
                     onClick={handlePlaceOrder}
-                    className="w-full py-4 px-6 bg-[#BA7A7C] hover:bg-[#844c4e] text-white rounded-lg font-label-md text-sm sm:text-base font-semibold tracking-wider flex items-center justify-center gap-3 shadow-md transition-all active:scale-[0.99] cursor-pointer uppercase"
+                    disabled={isPlacingOrder}
+                    className="w-full py-4 px-6 bg-[#BA7A7C] hover:bg-[#844c4e] text-white rounded-lg font-label-md text-sm sm:text-base font-semibold tracking-wider flex items-center justify-center gap-3 shadow-md transition-all active:scale-[0.99] cursor-pointer uppercase disabled:opacity-60"
                   >
-                    <span className="material-symbols-outlined text-[20px]">lock</span>
-                    <span>PLACE ORDER • ₹{finalTotal.toFixed(2)}</span>
+                    <span className="material-symbols-outlined text-[20px]">
+                      {isPlacingOrder ? 'sync' : 'lock'}
+                    </span>
+                    <span>
+                      {isPlacingOrder
+                        ? 'SAVING ORDER & DISPATCHING...'
+                        : `PLACE ORDER • ₹${finalTotal.toFixed(2)}`}
+                    </span>
                   </button>
                   <p className="font-body-sm text-xs text-center text-[#524343] max-w-lg mx-auto">
                     By placing this order, you agree to Hijab Box Terms &amp; Studio Return Policies. Every order is inspected, delicately scented, and packed by hand by our sister team.
