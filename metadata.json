@@ -1,0 +1,6 @@
+{
+  "name": "Hijab Box - Sister-Owned",
+  "description": "Thoughtfully curated hijabs, tactile essentials, and handcrafted keepsake boxes designed for effortless modesty and quiet, enduring elegance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
