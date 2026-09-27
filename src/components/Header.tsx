@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { LOGO_URL } from '../data/products';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const Header: React.FC = () => {
   const {
@@ -60,7 +61,9 @@ export const Header: React.FC = () => {
           <img
             alt="Hijab Box Authentic Logo"
             className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-            src={LOGO_URL}
+            src={to4kUrl(LOGO_URL)}
+            referrerPolicy="no-referrer"
+            onError={handleImageError}
           />
           <div className="flex flex-col text-left">
             <span className="font-headline-sm font-medium tracking-tight text-[#2B2523]">

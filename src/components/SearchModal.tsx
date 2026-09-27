@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data/products';
 import { Product } from '../types';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const SearchModal: React.FC = () => {
   const { searchOpen, setSearchOpen, addToCart, setQuickViewProduct } = useCart();
@@ -90,9 +91,12 @@ export const SearchModal: React.FC = () => {
                   }}
                 >
                   <img
-                    src={product.image}
+                    src={to4kUrl(product.image)}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                    onError={handleImageError}
                   />
                 </div>
                 <div className="flex-1 min-w-0">

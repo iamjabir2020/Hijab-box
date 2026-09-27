@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { LOGO_URL } from '../data/products';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const CheckoutPage: React.FC = () => {
   const {
@@ -64,7 +65,9 @@ export const CheckoutPage: React.FC = () => {
             <img
               alt="Hijab Box Authentic Logo"
               className="h-8 w-auto object-contain"
-              src={LOGO_URL}
+              src={to4kUrl(LOGO_URL)}
+              referrerPolicy="no-referrer"
+              onError={handleImageError}
             />
             <div className="flex flex-col text-left">
               <span className="font-headline-sm font-medium tracking-tight text-[#2B2523] text-base sm:text-lg">
@@ -683,9 +686,12 @@ export const CheckoutPage: React.FC = () => {
                       <div key={item.id} className="flex items-center gap-3">
                         <div className="relative w-16 h-20 rounded-md overflow-hidden bg-[#f7ebe8] shrink-0 shadow-sm">
                           <img
-                            src={item.product.image}
+                            src={to4kUrl(item.product.image)}
                             alt={item.product.name}
                             className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                            loading="lazy"
+                            onError={handleImageError}
                           />
                           <span className="absolute top-1 right-1 bg-[#2B2523]/80 text-white rounded-full text-[10px] w-4 h-4 flex items-center justify-center font-bold">
                             {item.quantity}
@@ -791,7 +797,10 @@ export const CheckoutPage: React.FC = () => {
                       <img
                         className="w-full h-full object-cover"
                         alt="Three Muslim sister founders in soft earthy tone scarves"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdof8kbGCrxcsdobl3yQeNRtx1ZOw2lMpA-WMFsvGpD_Xu7nGBX-25z4aZ9FvH_aB4CWPeEM3i1zzaqq-Lzf3QTlayhp3XkQnSQRIsmUin9cNaPqu7TJmaoI26PrUJprGWsKbHf9i8N8MHBL8BTTS0xYTagi5_wxI-V_IyF8qqTvwWGNbDXEVZt2yp6RXzAeAMXJrSJbyG9Fjs1Y2EqIM2ufKeWFQkf0_oEbKETX5k39NWfRYzQDxF"
+                        src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuDdof8kbGCrxcsdobl3yQeNRtx1ZOw2lMpA-WMFsvGpD_Xu7nGBX-25z4aZ9FvH_aB4CWPeEM3i1zzaqq-Lzf3QTlayhp3XkQnSQRIsmUin9cNaPqu7TJmaoI26PrUJprGWsKbHf9i8N8MHBL8BTTS0xYTagi5_wxI-V_IyF8qqTvwWGNbDXEVZt2yp6RXzAeAMXJrSJbyG9Fjs1Y2EqIM2ufKeWFQkf0_oEbKETX5k39NWfRYzQDxF")}
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        onError={handleImageError}
                       />
                     </div>
                     <div>

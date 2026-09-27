@@ -1,6 +1,7 @@
 import { Product } from '../types';
 import { PRODUCTS } from '../data/products';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { to4kUrl } from '../utils/imageUtils';
 
 /**
  * Fetch products from Supabase, with automatic static fallback
@@ -37,7 +38,7 @@ export async function getProducts(): Promise<{
         originalPrice: item.original_price ? Number(item.original_price) : undefined,
         rating: Number(item.rating || 5),
         reviewsCount: Number(item.reviews_count || 0),
-        image: item.image,
+        image: to4kUrl(item.image),
         imageAlt: item.image_alt || item.name,
         colors: item.colors || [],
         dimensions: item.dimensions || '180 × 90 cm',

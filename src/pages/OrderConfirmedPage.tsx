@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data/products';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const OrderConfirmedPage: React.FC = () => {
   const { lastOrderId, setActivePage, addToCart, checkoutDetails } = useCart();
@@ -15,19 +16,19 @@ export const OrderConfirmedPage: React.FC = () => {
 
   const instagramShots = [
     {
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXbQjHIcn9y5_dILLLdTjLcMUPAMdHgI5tRwuEwredUpCsZAagwIORi7FV3Brnqbg4Xfv9cChDbmUvubBteNDP-kW9zMZiB9wbpDijX21deA9dP-k2e4QqsKWXvyJMlD2wW9oNgQd7w22N5jidVuKiLZjIbO1ipFRd99WqgJxd0WQxX0xFgSUN0p6KRZEraU4WCkNsxHdIDX2DXR_zWTuxGeTyQk2u-mKfb2_e43AuNhOASpqY8hRa',
+      img: to4kUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuAXbQjHIcn9y5_dILLLdTjLcMUPAMdHgI5tRwuEwredUpCsZAagwIORi7FV3Brnqbg4Xfv9cChDbmUvubBteNDP-kW9zMZiB9wbpDijX21deA9dP-k2e4QqsKWXvyJMlD2wW9oNgQd7w22N5jidVuKiLZjIbO1ipFRd99WqgJxd0WQxX0xFgSUN0p6KRZEraU4WCkNsxHdIDX2DXR_zWTuxGeTyQk2u-mKfb2_e43AuNhOASpqY8hRa'),
       alt: 'Baroda design studio modal fabric rolls',
     },
     {
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRPzfNDdC2_kL9oMN0rYNvnbc46YJMgAV-68KWmRZY4Y0lJinVnWH60R5L5xoEz1c7AeryOw2bNFaslkuWc5IcMjtgC1GhGGDuozamK2-Xqiop0JbYl0qt0D-lgm_aqLp2X6fDAqDrXjWoeIYyXHWPwlYmZOIZj-qQJiFiuE67hWbnJeJdE5-KAXU9r-7PEC-HdasJVF3LWwCh29YqYv7TRyN4cYhgYD7ZQQAMFMJ3mTpmqOeM1OIU',
+      img: to4kUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuCRPzfNDdC2_kL9oMN0rYNvnbc46YJMgAV-68KWmRZY4Y0lJinVnWH60R5L5xoEz1c7AeryOw2bNFaslkuWc5IcMjtgC1GhGGDuozamK2-Xqiop0JbYl0qt0D-lgm_aqLp2X6fDAqDrXjWoeIYyXHWPwlYmZOIZj-qQJiFiuE67hWbnJeJdE5-KAXU9r-7PEC-HdasJVF3LWwCh29YqYv7TRyN4cYhgYD7ZQQAMFMJ3mTpmqOeM1OIU'),
       alt: 'Draping dusty rose hijab in studio mirror',
     },
     {
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5jlsJ2zHopNXJPXiNaHx5kMghqB_9n5aVZubalJW-fYUi_cvYqgPrEreZ5qYbXy0t3csCUl9NPAOcfSDiMird-cFZ3KXeEKwcILC7M9TIyiT8yZ0KHKSlB59mFd4m0EBMM1oL3i2T-iG162y3D9Zy6WTT2ay7emy8WhAselwBwHPtx0-jOd13AkNGi9Nxypfx7pxUM66WIi_pdz-M8Eltiqj_7vLi50GyWglDcEHoKg9ASbBhfplA',
+      img: to4kUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuC5jlsJ2zHopNXJPXiNaHx5kMghqB_9n5aVZubalJW-fYUi_cvYqgPrEreZ5qYbXy0t3csCUl9NPAOcfSDiMird-cFZ3KXeEKwcILC7M9TIyiT8yZ0KHKSlB59mFd4m0EBMM1oL3i2T-iG162y3D9Zy6WTT2ay7emy8WhAselwBwHPtx0-jOd13AkNGi9Nxypfx7pxUM66WIi_pdz-M8Eltiqj_7vLi50GyWglDcEHoKg9ASbBhfplA'),
       alt: 'Hands stamping gold wax seal on keepsake card',
     },
     {
-      img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqMedw3DYPddFzezwIW5VLkGu6HDRy9ZOecVWQXCYACz1BLADFdynHsgwbgTUa8RixNyyU6_kYrg9RcT4koXzfYpomuUahre7Gg-ijAs9S0nHp17LUB1g1VktiA26iwkSQrXzH_yk7_-L5E45E_4X_OEQlj34hCkLQwmb0mZRXz9GmGTJDkbhkfV_V5-kV2Jrb4dfgnQJ0U1wIF5Ii6Z8bvmX8vlpKshMdzy_frhdIcQkiBMqtpHZe',
+      img: to4kUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuBqMedw3DYPddFzezwIW5VLkGu6HDRy9ZOecVWQXCYACz1BLADFdynHsgwbgTUa8RixNyyU6_kYrg9RcT4koXzfYpomuUahre7Gg-ijAs9S0nHp17LUB1g1VktiA26iwkSQrXzH_yk7_-L5E45E_4X_OEQlj34hCkLQwmb0mZRXz9GmGTJDkbhkfV_V5-kV2Jrb4dfgnQJ0U1wIF5Ii6Z8bvmX8vlpKshMdzy_frhdIcQkiBMqtpHZe'),
       alt: 'Curated gift boxes with dried botanical florals',
     },
   ];
@@ -133,9 +134,12 @@ export const OrderConfirmedPage: React.FC = () => {
               {/* Item 1 */}
               <div className="flex items-center gap-3 bg-[#FAF8F5] p-3 rounded-lg shadow-sm border border-[#E8DFD8]">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHTE74xA76QUi7J3AStxVgdL1NNAL25PUyUN3kiOUT4roFydA1ylcA5RSOq0Oc2eccsN2IrsXdcB9Pp_P19MTQiMEmNm45wZaTqnllGgFV8Bnx5oYsWZGOzJfiPPVkx-bSJjwwt1BTGbAagGdD5HDOxWm6QRUId5Qqt871yzFAWOIgClpy6ia4IhdyI1zoNYeiVXCUvmHED6FybNDwbHxd2-iS-2AegsGCAxY7EnplaZQkeyG19nd7"
+                  src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuBHTE74xA76QUi7J3AStxVgdL1NNAL25PUyUN3kiOUT4roFydA1ylcA5RSOq0Oc2eccsN2IrsXdcB9Pp_P19MTQiMEmNm45wZaTqnllGgFV8Bnx5oYsWZGOzJfiPPVkx-bSJjwwt1BTGbAagGdD5HDOxWm6QRUId5Qqt871yzFAWOIgClpy6ia4IhdyI1zoNYeiVXCUvmHED6FybNDwbHxd2-iS-2AegsGCAxY7EnplaZQkeyG19nd7")}
                   alt="Ombre Rouge Modal Hijab"
                   className="w-16 h-20 object-cover rounded"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={handleImageError}
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="font-body-md text-sm text-[#2B2523] font-medium truncate">
@@ -154,9 +158,12 @@ export const OrderConfirmedPage: React.FC = () => {
               {/* Item 2 */}
               <div className="flex items-center gap-3 bg-[#FAF8F5] p-3 rounded-lg shadow-sm border border-[#E8DFD8]">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlFX2NIJG0fT9nonGINHekV74waVgmmqUSMoRIwc5NPIQt6rX15sTB3WA9GhKV2zIuiq9uOsRi_uCtY4Otylve-jRYPVBX5ADLvJaIV-vgGvZD9-t0US1C2pEkdgyLRDFqJZYJIGs0FgNwdiYe8LMDUZhEt_lfpjuNalqZOsD4zrXw7aelqtPirIyDN77SNg0TGOTPOkF84ogmM0EJnU0GPWBVG332S78TZ0HjwUdmNTf8geHHuLxx"
+                  src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuAlFX2NIJG0fT9nonGINHekV74waVgmmqUSMoRIwc5NPIQt6rX15sTB3WA9GhKV2zIuiq9uOsRi_uCtY4Otylve-jRYPVBX5ADLvJaIV-vgGvZD9-t0US1C2pEkdgyLRDFqJZYJIGs0FgNwdiYe8LMDUZhEt_lfpjuNalqZOsD4zrXw7aelqtPirIyDN77SNg0TGOTPOkF84ogmM0EJnU0GPWBVG332S78TZ0HjwUdmNTf8geHHuLxx")}
                   alt="Snag-Free Hijab Magnets"
                   className="w-16 h-20 object-cover rounded"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={handleImageError}
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="font-body-md text-sm text-[#2B2523] font-medium truncate">
@@ -175,9 +182,12 @@ export const OrderConfirmedPage: React.FC = () => {
               {/* Item 3 */}
               <div className="flex items-center gap-3 bg-[#FAF8F5] p-3 rounded-lg shadow-sm border border-[#E8DFD8]">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAO_iJmktCq4u3RyROb2jtL4FbEAJt37qb9akl-AWYEHCs2tH70h--osFnckanQO2SFQ8JmeSEgN122VBRu0j3hmTphrI10TlPTGwvYQHCScjlOWlFvckiBorjQKWeOAh2L1hoJgjILxQzDLm2i9dN21X7Xsw-S-beJa0qqUdyoSVCzioY7q7YsosXYt4tfvGGglq06XaeZD2Lx6OMuVwVqjGCwg9paOEDdGgoeJp40jBNnNZij9vdO"
+                  src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuAO_iJmktCq4u3RyROb2jtL4FbEAJt37qb9akl-AWYEHCs2tH70h--osFnckanQO2SFQ8JmeSEgN122VBRu0j3hmTphrI10TlPTGwvYQHCScjlOWlFvckiBorjQKWeOAh2L1hoJgjILxQzDLm2i9dN21X7Xsw-S-beJa0qqUdyoSVCzioY7q7YsosXYt4tfvGGglq06XaeZD2Lx6OMuVwVqjGCwg9paOEDdGgoeJp40jBNnNZij9vdO")}
                   alt="Modal Tie Cap Under-scarf"
                   className="w-16 h-20 object-cover rounded"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={handleImageError}
                 />
                 <div className="flex-1 min-w-0">
                   <h4 className="font-body-md text-sm text-[#2B2523] font-medium truncate">
@@ -426,7 +436,10 @@ export const OrderConfirmedPage: React.FC = () => {
             <img
               alt="Hand-packed Hijab Box packaging"
               className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWtmSbABpq0Z7NDfVGeSu2VM7BglpbvSW6KlI1KyNJO9byDoPotDyAcMldKbBXKies3K5hkmZ7-jsmHfvWnehRPk-KOHlphqVDk2anLg1uZpXvarSToTa9SrJqlCCxX6TYDoJEjyyecHeeto0IUvRdEWsaYs2Ffr9KMfeJtDd4DMyv44jAMiZEgouwE_ZKJMnpbPrPf44pXemvRrr9rRCpYM2FQtZ_y0taLiQf2jTN_K7fKqKQHObg"
+              src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuCWtmSbABpq0Z7NDfVGeSu2VM7BglpbvSW6KlI1KyNJO9byDoPotDyAcMldKbBXKies3K5hkmZ7-jsmHfvWnehRPk-KOHlphqVDk2anLg1uZpXvarSToTa9SrJqlCCxX6TYDoJEjyyecHeeto0IUvRdEWsaYs2Ffr9KMfeJtDd4DMyv44jAMiZEgouwE_ZKJMnpbPrPf44pXemvRrr9rRCpYM2FQtZ_y0taLiQf2jTN_K7fKqKQHObg")}
+              referrerPolicy="no-referrer"
+              loading="lazy"
+              onError={handleImageError}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#2B2523]/50 via-transparent to-transparent"></div>
             <div className="absolute bottom-6 left-6 text-white font-label-caps text-xs tracking-widest uppercase font-semibold">
@@ -555,9 +568,12 @@ export const OrderConfirmedPage: React.FC = () => {
             >
               <div className="aspect-[3/4] relative overflow-hidden bg-[#f7ebe8]">
                 <img
-                  src={product.image}
+                  src={to4kUrl(product.image)}
                   alt={product.imageAlt}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={handleImageError}
                 />
                 {product.badge && (
                   <span className="absolute top-3 left-3 bg-white/90 px-2 py-1 rounded text-[#2B2523] font-label-caps text-[10px] uppercase font-semibold">
@@ -613,9 +629,12 @@ export const OrderConfirmedPage: React.FC = () => {
               className="aspect-square rounded-lg overflow-hidden bg-[#f7ebe8] shadow-sm group relative block"
             >
               <img
-                src={shot.img}
+                src={to4kUrl(shot.img)}
                 alt={shot.alt}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                onError={handleImageError}
               />
               <div className="absolute inset-0 bg-[#2B2523]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                 <span className="material-symbols-outlined text-2xl">photo_camera</span>

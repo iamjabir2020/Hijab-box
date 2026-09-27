@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const QuickViewModal: React.FC = () => {
   const { quickViewProduct, setQuickViewProduct, addToCart, isInWishlist, toggleWishlist } = useCart();
@@ -35,9 +36,12 @@ export const QuickViewModal: React.FC = () => {
           {/* Image */}
           <div className="relative aspect-[3/4] bg-[#F5EFEB]">
             <img
-              src={quickViewProduct.image}
+              src={to4kUrl(quickViewProduct.image)}
               alt={quickViewProduct.imageAlt}
               className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+              loading="eager"
+              onError={handleImageError}
             />
             {quickViewProduct.badge && (
               <span className="absolute top-4 left-4 px-2.5 py-1 bg-[#844C4E] text-white font-label-caps text-[10px] uppercase rounded-full shadow-sm">

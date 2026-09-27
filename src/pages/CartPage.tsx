@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data/products';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const CartPage: React.FC = () => {
   const {
@@ -165,9 +166,12 @@ export const CartPage: React.FC = () => {
                       {/* Thumbnail */}
                       <div className="w-full sm:w-28 sm:h-36 shrink-0 rounded overflow-hidden bg-[#F5EFEB] relative">
                         <img
-                          src={item.product.image}
+                          src={to4kUrl(item.product.image)}
                           alt={item.product.imageAlt}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          referrerPolicy="no-referrer"
+                          loading="lazy"
+                          onError={handleImageError}
                         />
                         {item.product.badge && (
                           <span className="absolute top-1 left-1 bg-[#844C4E] text-white font-label-caps text-[9px] px-1.5 py-0.5 rounded uppercase font-semibold tracking-wider">
@@ -547,9 +551,12 @@ export const CartPage: React.FC = () => {
               >
                 <div className="relative aspect-[3/4] overflow-hidden bg-[#FAF8F5]">
                   <img
-                    src={p.image}
+                    src={to4kUrl(p.image)}
                     alt={p.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                    onError={handleImageError}
                   />
                   {p.badge && (
                     <span className="absolute top-2 left-2 bg-[#2B2523] text-white font-label-caps text-[9px] px-2 py-0.5 uppercase tracking-widest rounded">

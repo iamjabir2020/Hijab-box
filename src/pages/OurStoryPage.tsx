@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const OurStoryPage: React.FC = () => {
   const { setActivePage } = useCart();
@@ -28,9 +29,12 @@ export const OurStoryPage: React.FC = () => {
           <div className="lg:col-span-6 relative">
             <div className="aspect-[4/5] rounded-xl overflow-hidden shadow-2xl bg-[#F5EFEB] border border-[#D8CCC4]/50">
               <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdof8kbGCrxcsdobl3yQeNRtx1ZOw2lMpA-WMFsvGpD_Xu7nGBX-25z4aZ9FvH_aB4CWPeEM3i1zzaqq-Lzf3QTlayhp3XkQnSQRIsmUin9cNaPqu7TJmaoI26PrUJprGWsKbHf9i8N8MHBL8BTTS0xYTagi5_wxI-V_IyF8qqTvwWGNbDXEVZt2yp6RXzAeAMXJrSJbyG9Fjs1Y2EqIM2ufKeWFQkf0_oEbKETX5k39NWfRYzQDxF"
+                src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuDdof8kbGCrxcsdobl3yQeNRtx1ZOw2lMpA-WMFsvGpD_Xu7nGBX-25z4aZ9FvH_aB4CWPeEM3i1zzaqq-Lzf3QTlayhp3XkQnSQRIsmUin9cNaPqu7TJmaoI26PrUJprGWsKbHf9i8N8MHBL8BTTS0xYTagi5_wxI-V_IyF8qqTvwWGNbDXEVZt2yp6RXzAeAMXJrSJbyG9Fjs1Y2EqIM2ufKeWFQkf0_oEbKETX5k39NWfRYzQDxF")}
                 alt="Three sister founders of Hijab Box in Baroda Studio"
                 className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                loading="lazy"
+                onError={handleImageError}
               />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-xl shadow-lg border border-[#E8DFD8] hidden sm:block max-w-xs">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data/products';
 import { Product } from '../types';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const ShopPage: React.FC = () => {
   const {
@@ -96,7 +97,10 @@ export const ShopPage: React.FC = () => {
                 <img
                   className="w-full h-full object-cover"
                   alt="Editorial still life of luxurious folded modal and silk chiffon hijabs"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRoKQBvENBHsy5Q0Zq9fs-nxRGsJVVI7v7BcnX112rj1WWe0bAbbeR8ABDdwRYxQHtoEALJVYX3qQUZNloCIXD0P916CQLQSDxl7VMWebkdKWkyj5Hrou7aGPCinXcCIuSpaypvz5nNT1sXZaexZ9HncsMcf3GEG2cjI9hCSUCUQWRXBYGfdNWjRNL5rp_oGiSDu2eVwQAcVSJRdxF5xjOycjAlIYmX1RGi5ujXR9A_FcJxu4f9X8a"
+                  src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuCRoKQBvENBHsy5Q0Zq9fs-nxRGsJVVI7v7BcnX112rj1WWe0bAbbeR8ABDdwRYxQHtoEALJVYX3qQUZNloCIXD0P916CQLQSDxl7VMWebkdKWkyj5Hrou7aGPCinXcCIuSpaypvz5nNT1sXZaexZ9HncsMcf3GEG2cjI9hCSUCUQWRXBYGfdNWjRNL5rp_oGiSDu2eVwQAcVSJRdxF5xjOycjAlIYmX1RGi5ujXR9A_FcJxu4f9X8a")}
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  onError={handleImageError}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#2B2523]/50 via-transparent to-transparent"></div>
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-[#FAF8F5]">
@@ -261,10 +265,13 @@ export const ShopPage: React.FC = () => {
                   {/* Image container */}
                   <div className="relative w-full aspect-[3/4] bg-[#f7ebe8] overflow-hidden">
                     <img
-                      src={product.image}
+                      src={to4kUrl(product.image)}
                       alt={product.imageAlt}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       onClick={() => setQuickViewProduct(product)}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      onError={handleImageError}
                     />
 
                     {/* Badge */}
@@ -415,7 +422,10 @@ export const ShopPage: React.FC = () => {
                 <img
                   className="w-full h-full object-cover"
                   alt="Editorial lifestyle photo of modern Muslim woman in Baroda studio adjusting her drape hijab in front of a curved mirror"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC9P2JfTcpOJWaQtNzCFWjoQHIix2ONbosImF6f9Z1hukaojYSBW_dbB3e_ato5JzZvtmT2-TYumzdNJyQn9gPOQ4iAA8iFxSYEEUWoPt1gJIuNihrDLruL0wtyk4DrH22j7LcaOOSXl4jttmvWWOOawIkUJFUDvwIuSA8c4y9SvuEv-ZbRuSY2uGYIOo7W37fOOUlU9LIAHbgdiRMtg0N2EAwLbjohb_i4Mytt2qne6XOJjUiye7v"
+                  src={to4kUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuDC9P2JfTcpOJWaQtNzCFWjoQHIix2ONbosImF6f9Z1hukaojYSBW_dbB3e_ato5JzZvtmT2-TYumzdNJyQn9gPOQ4iAA8iFxSYEEUWoPt1gJIuNihrDLruL0wtyk4DrH22j7LcaOOSXl4jttmvWWOOawIkUJFUDvwIuSA8c4y9SvuEv-ZbRuSY2uGYIOo7W37fOOUlU9LIAHbgdiRMtg0N2EAwLbjohb_i4Mytt2qne6XOJjUiye7v")}
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={handleImageError}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#2B2523]/30 via-transparent to-transparent hidden lg:block"></div>
               </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data/products';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const WishlistDrawer: React.FC = () => {
   const { wishlistOpen, setWishlistOpen, wishlist, toggleWishlist, addToCart } = useCart();
@@ -44,9 +45,12 @@ export const WishlistDrawer: React.FC = () => {
                 <div key={product.id} className="flex gap-3.5 items-center pb-3 border-b border-[#f2e6e2] last:border-0">
                   <div className="w-16 h-20 bg-[#F5EFEB] rounded overflow-hidden shrink-0 shadow-sm">
                     <img
-                      src={product.image}
+                      src={to4kUrl(product.image)}
                       alt={product.name}
                       className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      onError={handleImageError}
                     />
                   </div>
                   <div className="flex-1 min-w-0">

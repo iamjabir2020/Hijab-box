@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { PRODUCTS } from '../data/products';
 import { Product } from '../types';
+import { to4kUrl, handleImageError } from '../utils/imageUtils';
 
 export const CustomizeBoxPage: React.FC = () => {
   const { addToCart } = useCart();
@@ -13,7 +14,7 @@ export const CustomizeBoxPage: React.FC = () => {
       capacity: 3,
       basePrice: 1799,
       originalPrice: 2299,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWtmSbABpq0Z7NDfVGeSu2VM7BglpbvSW6KlI1KyNJO9byDoPotDyAcMldKbBXKies3K5hkmZ7-jsmHfvWnehRPk-KOHlphqVDk2anLg1uZpXvarSToTa9SrJqlCCxX6TYDoJEjyyecHeeto0IUvRdEWsaYs2Ffr9KMfeJtDd4DMyv44jAMiZEgouwE_ZKJMnpbPrPf44pXemvRrr9rRCpYM2FQtZ_y0taLiQf2jTN_K7fKqKQHObg',
+      image: to4kUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuCWtmSbABpq0Z7NDfVGeSu2VM7BglpbvSW6KlI1KyNJO9byDoPotDyAcMldKbBXKies3K5hkmZ7-jsmHfvWnehRPk-KOHlphqVDk2anLg1uZpXvarSToTa9SrJqlCCxX6TYDoJEjyyecHeeto0IUvRdEWsaYs2Ffr9KMfeJtDd4DMyv44jAMiZEgouwE_ZKJMnpbPrPf44pXemvRrr9rRCpYM2FQtZ_y0taLiQf2jTN_K7fKqKQHObg'),
       description: 'Signature rigid keepsake box with embossed rose gold foil lettering, organic scented tissue & wax seal.',
     },
     {
@@ -22,7 +23,7 @@ export const CustomizeBoxPage: React.FC = () => {
       capacity: 5,
       basePrice: 2699,
       originalPrice: 3399,
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRoKQBvENBHsy5Q0Zq9fs-nxRGsJVVI7v7BcnX112rj1WWe0bAbbeR8ABDdwRYxQHtoEALJVYX3qQUZNloCIXD0P916CQLQSDxl7VMWebkdKWkyj5Hrou7aGPCinXcCIuSpaypvz5nNT1sXZaexZ9HncsMcf3GEG2cjI9hCSUCUQWRXBYGfdNWjRNL5rp_oGiSDu2eVwQAcVSJRdxF5xjOycjAlIYmX1RGi5ujXR9A_FcJxu4f9X8a',
+      image: to4kUrl('https://lh3.googleusercontent.com/aida-public/AB6AXuCRoKQBvENBHsy5Q0Zq9fs-nxRGsJVVI7v7BcnX112rj1WWe0bAbbeR8ABDdwRYxQHtoEALJVYX3qQUZNloCIXD0P916CQLQSDxl7VMWebkdKWkyj5Hrou7aGPCinXcCIuSpaypvz5nNT1sXZaexZ9HncsMcf3GEG2cjI9hCSUCUQWRXBYGfdNWjRNL5rp_oGiSDu2eVwQAcVSJRdxF5xjOycjAlIYmX1RGi5ujXR9A_FcJxu4f9X8a'),
       description: 'Generous multi-tier keepsake box designed to build your dream capsule modesty wardrobe.',
     },
   ];
@@ -131,7 +132,14 @@ export const CustomizeBoxPage: React.FC = () => {
                     }`}
                   >
                     <div className="aspect-[16/10] rounded-lg overflow-hidden mb-3 bg-[#f7ebe8]">
-                      <img src={box.image} alt={box.name} className="w-full h-full object-cover" />
+                      <img
+                        src={to4kUrl(box.image)}
+                        alt={box.name}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        onError={handleImageError}
+                      />
                     </div>
                     <div className="flex justify-between items-start">
                       <h4 className="font-headline-sm text-base text-[#2B2523] font-medium">{box.name}</h4>
@@ -176,7 +184,14 @@ export const CustomizeBoxPage: React.FC = () => {
                       }`}
                     >
                       <div className="aspect-[3/4] relative overflow-hidden bg-[#f7ebe8]">
-                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                        <img
+                          src={to4kUrl(product.image)}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                          loading="lazy"
+                          onError={handleImageError}
+                        />
                         {isSelected && (
                           <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#BA7A7C] text-white flex items-center justify-center text-xs shadow">
                             ✓
@@ -218,7 +233,14 @@ export const CustomizeBoxPage: React.FC = () => {
                           : 'border-[#E8DFD8] bg-[#FAF8F5] hover:bg-white'
                       }`}
                     >
-                      <img src={acc.image} alt={acc.name} className="w-12 h-14 object-cover rounded bg-white shrink-0" />
+                      <img
+                        src={to4kUrl(acc.image)}
+                        alt={acc.name}
+                        className="w-12 h-14 object-cover rounded bg-white shrink-0"
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        onError={handleImageError}
+                      />
                       <div className="flex-1 min-w-0">
                         <h5 className="font-body-md text-xs font-medium text-[#2B2523] truncate">{acc.name}</h5>
                         <span className="text-[10px] text-[#657150] font-semibold uppercase">Included in Box</span>
@@ -295,7 +317,14 @@ export const CustomizeBoxPage: React.FC = () => {
               <h3 className="font-headline-sm text-xl text-[#2B2523] font-medium mt-1">Your Custom Box</h3>
 
               <div className="mt-4 aspect-[16/10] rounded-lg overflow-hidden bg-[#f7ebe8] border border-[#E8DFD8]">
-                <img src={selectedBox.image} alt={selectedBox.name} className="w-full h-full object-cover" />
+                <img
+                  src={to4kUrl(selectedBox.image)}
+                  alt={selectedBox.name}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={handleImageError}
+                />
               </div>
 
               {/* Chosen list */}
